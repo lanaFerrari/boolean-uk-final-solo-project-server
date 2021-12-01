@@ -6,7 +6,7 @@ const signup = async (req, res) => {
   const userToCreate = { ...req.body };
 
   if (!userToCreate.userName || !userToCreate.password) {
-    res.status(400).json({ erros: "Missing information" });
+    res.status(400).json({ error: "Missing information" });
   }
 
   try {
