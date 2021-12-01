@@ -31,4 +31,48 @@ const signup = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-module.exports = { signup };
+
+async function login(req, res) {
+  const { userName, password: passwordFromRequest } = req.body;
+
+  if (!userName || !passwordFromRequest) {
+    res.status(400).json({ error: "Missing information" });
+  }
+
+  try {
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        userName,
+      },
+    });
+
+    if (!foundUser) {
+      res.status(401).json({ message: "Not Authorized" });
+    }
+
+    const passwordFromData = foundUser.password;
+
+    const matchingPasswords = await bcrypt.compare(
+      passwordFromRequest,
+      passwordFromData
+    );
+
+    if (matchingPasswords) {
+      const userToToken = {
+        ...foundUser,
+      };
+
+      delete userToToken.password;
+
+      const token = createToken(userToToken);
+      res.status(200).json({ token });
+    } else {
+      res.status(401).json({ message: "Not Authorized" });
+    }
+  } catch (error) {
+    console.error({ error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = { signup, login };
