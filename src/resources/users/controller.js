@@ -1,28 +1,19 @@
 const prisma = require("../../utils/database");
-const jwt = require("jsonwebtoken");
-const secretKey = process.env.JWT_SECRET;
 
 async function getProfile(req, res) {
-  const token = req.headers.authorization;
-  console.log({ token });
+  const userId = req.user.id;
+  console.log("Id inside getProfile", userId);
 
-  jwt.verify(token, secretKey, async (err, decoded) => {
-    if (err) {
-      throw Error("Not Authorized");
-    }
-    console.log("DECODED", decoded);
-
-    try {
-      const profile = await prisma.user.findUnique({
-        where: {
-          id: parseInt(decoded.id),
-        },
-      });
-      res.json({ profile });
-    } catch (error) {
-      console.error({ error: error.message });
-    }
-  });
+  try {
+    const profile = await prisma.user.findUnique({
+      where: {
+        id: parseInt(userId),
+      },
+    });
+    res.json({ profile });
+  } catch (error) {
+    console.error({ error: error.message });
+  }
 }
 
 module.exports = { getProfile };
