@@ -12,8 +12,23 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  userName String @unique
+  id       Int            @id @default(autoincrement())
+  userName String         @unique
   password String
   score    Int
+  games    usersOnGames[]
+}
+
+model Game {
+  id    Int            @id @default(autoincrement())
+  users usersOnGames[]
+}
+
+model usersOnGames {
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+  gameId Int
+  game   Game @relation(fields: [gameId], references: [id])
+
+  @@id([userId, gameId])
 }
