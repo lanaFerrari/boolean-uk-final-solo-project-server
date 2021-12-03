@@ -14,6 +14,7 @@ function protect(req, res, next) {
   // req.user=user to send back to the next function
 
   const token = req.headers.authorization;
+  console.log("TOKEN", token);
 
   jwt.verify(token, secretKey, async (err, payload) => {
     if (err) {
@@ -37,4 +38,34 @@ function protect(req, res, next) {
   });
 }
 
-module.exports = { createToken, protect };
+function protectAdmin(req, res, next) {
+  const token = req.headers.authorization;
+  console.log("TOKEN", token);
+
+  jwt.verify(token, secretKey, async (err, payload) => {
+    if (err) {
+      throw Error("Not Authorized");
+    }
+    console.log("Payload", payload);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: payload.id,
+      },
+    });
+
+    delete user.password;
+
+    if (user.role !== "ADMIN") {
+      throw error("Not authorized");
+    }
+
+    req.user = user;
+
+    console.log("User going to func", user);
+
+    next();
+  });
+}
+
+module.exports = { createToken, protect, protectAdmin };

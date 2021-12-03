@@ -10,6 +10,8 @@ async function getProfile(req, res) {
         id: parseInt(userId),
       },
     });
+    delete profile.password;
+
     res.json({ profile });
   } catch (error) {
     console.error({ error: error.message });
