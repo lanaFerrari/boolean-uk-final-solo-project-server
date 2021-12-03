@@ -16,12 +16,27 @@ model User {
   userName String         @unique
   password String
   score    Int
+  role     Role           @default(USER)
   games    UsersOnGames[]
 }
 
+model Admin {
+  id       Int    @id @default(autoincrement())
+  userName String @unique
+  password String
+  role     Role   @default(ADMIN)
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPERUSER
+}
+
 model Game {
-  id    Int            @id @default(autoincrement())
-  users UsersOnGames[]
+  id     Int            @id @default(autoincrement())
+  status String
+  users  UsersOnGames[]
 }
 
 model UsersOnGames {

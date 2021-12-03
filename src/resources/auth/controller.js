@@ -17,6 +17,7 @@ const signup = async (req, res) => {
     const result = await prisma.user.create({
       data: {
         ...userToCreate,
+        role: "USER",
       },
       select: {
         id: true,
