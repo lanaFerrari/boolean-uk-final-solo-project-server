@@ -1,18 +1,24 @@
 const { PrismaClient } = require("@prisma/client");
+const bcrypt = require("bcrypt");
 
 const prisma = new PrismaClient();
+
+const hashedPasswordOne = await bcrypt.hash("andrew", 10);
+const hashedPasswordTwo = await bcrypt.hash("anna", 10);
 
 async function seed() {
   const users = [
     {
       userName: "Andrew",
-      password: "andrew",
+      password: hashedPasswordOne,
       score: 0,
+      role: "USER",
     },
     {
       userName: "Anna",
-      password: "anna",
+      password: hashedPasswordTwo,
       score: 0,
+      role: "USER",
     },
   ];
 
