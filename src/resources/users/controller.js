@@ -3,16 +3,6 @@ const prisma = require("../../utils/database");
 async function getProfile(req, res) {
   const userId = req.user.id;
   console.log("Id inside getProfile", userId);
-
-  // model User {
-  //   id       Int            @id @default(autoincrement())
-  //   userName String         @unique
-  //   password String
-  //   score    Int
-  //   role     Role           @default(USER)
-  //   games    UsersOnGames[]
-  // }
-
   try {
     const profile = await prisma.user.findUnique({
       where: {
