@@ -2,13 +2,9 @@ const { user } = require("../../utils/database");
 const prisma = require("../../utils/database");
 
 async function getAllGames(req, res) {
-  const userId = req.user.id;
   try {
-    const games = await prisma.games.findMany({
-      where: {
-        userId,
-      },
-    });
+    const games = await prisma.game.findMany();
+
     res.json({ games });
   } catch (error) {
     console.error({ error: error.message });
@@ -17,7 +13,6 @@ async function getAllGames(req, res) {
 
 async function createGame(req, res) {
   const id = req.user.id;
-  console.log("REQ", id);
 
   try {
     const newGame = await prisma.game.create({
@@ -61,13 +56,31 @@ async function getGameWithUSers(req, res) {
       return user.userId;
     });
 
+    const userInGame = await prisma.user.findMany({
+      where: {
+        id: users[0],
+      },
+    });
+
+    const secondUserInGame = await prisma.user.findMany({
+      where: {
+        id: users[1],
+      },
+    });
+
+    delete userInGame[0].password;
+    delete userInGame[0].role;
+    delete secondUserInGame[0].password;
+    delete secondUserInGame[0].role;
     delete game.users;
-    res.status(200).json({ game, users });
+
+    res.status(200).json({ game, userInGame, secondUserInGame });
   } catch (error) {
     console.error({ error: error.message });
     res.status(500).json({ error: error.message });
   }
 }
+
 async function joinGame(req, res) {
   const id = parseInt(req.params.id);
   const userId = parseInt(req.user.id);
@@ -87,7 +100,7 @@ async function joinGame(req, res) {
             },
           },
         },
-        gameStatus: "ongoing",
+        status: "ongoing",
       },
       include: {
         users: {
@@ -95,7 +108,7 @@ async function joinGame(req, res) {
             user: {
               select: {
                 id: true,
-                username: true,
+                userName: true,
               },
             },
           },
@@ -106,6 +119,7 @@ async function joinGame(req, res) {
     const users = result.users.map((user) => {
       return user.user;
     });
+
     res.status(200).json({ result, users });
   } catch (error) {
     console.error({ error: error.message });
