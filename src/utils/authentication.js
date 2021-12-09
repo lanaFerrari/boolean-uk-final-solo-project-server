@@ -1,10 +1,11 @@
 const prisma = require("../utils/database");
 const jwt = require("jsonwebtoken");
+const { response } = require("express");
 
 const secretKey = process.env.JWT_SECRET;
 
 const createToken = (user) => {
-  return jwt.sign({ ...user }, secretKey, { expiresIn: "8h" });
+  return jwt.sign({ ...user }, secretKey, { expiresIn: "10d" });
 };
 
 function protect(req, res, next) {
@@ -18,7 +19,7 @@ function protect(req, res, next) {
 
   jwt.verify(token, secretKey, async (err, payload) => {
     if (err) {
-      throw Error("Not Authorized");
+      res.status(401).json({ error: err });
     }
     console.log("Payload", payload);
 
@@ -40,13 +41,13 @@ function protect(req, res, next) {
 
 function protectAdmin(req, res, next) {
   const token = req.headers.authorization;
-  console.log("TOKEN", token);
+  // console.log("TOKEN", token);
 
   jwt.verify(token, secretKey, async (err, payload) => {
     if (err) {
       throw Error("Not Authorized");
     }
-    console.log("Payload", payload);
+    // console.log("Payload", payload);
 
     const user = await prisma.user.findUnique({
       where: {
@@ -62,7 +63,7 @@ function protectAdmin(req, res, next) {
 
     req.user = user;
 
-    console.log("User going to func", user);
+    // console.log("User going to func", user);
 
     next();
   });

@@ -2,7 +2,8 @@ const prisma = require("../../utils/database");
 
 async function getProfile(req, res) {
   const userId = req.user.id;
-  console.log("Id inside getProfile", userId);
+  // console.log("Id inside getProfile", userId);
+
   try {
     const profile = await prisma.user.findUnique({
       where: {
@@ -29,7 +30,7 @@ async function getProfile(req, res) {
     delete profile.games;
 
     const userWithGames = { profile, userGames };
-
+    // console.log("User With Games", userWithGames);
     res.status(200).json({ userWithGames });
   } catch (error) {
     console.error({ error: error.message });

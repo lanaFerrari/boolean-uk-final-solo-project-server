@@ -10,11 +10,11 @@ const {
 
 const router = Router();
 
-router.get("/", protectAdmin, getAllGames);
+router.get("/", protect, getAllGames);
 
-router.get("/:id", getGameWithUSers);
+router.get("/:id", protect, getGameWithUSers);
 
-router.patch("/:id/join", joinGame);
+router.put("/:id/join", protect, joinGame);
 
 router.post("/", protect, createGame);
 
