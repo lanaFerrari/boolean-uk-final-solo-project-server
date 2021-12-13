@@ -16,8 +16,10 @@ const signup = async (req, res) => {
 
     const result = await prisma.user.create({
       data: {
-        ...userToCreate,
+        userName: userToCreate.userName,
+        password: hashedPassword,
         role: "USER",
+        score: 0,
       },
       select: {
         id: true,
