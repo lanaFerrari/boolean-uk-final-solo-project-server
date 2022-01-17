@@ -1,2 +1,1 @@
-# boolean-uk-final-solo-project-server
-Upstream for final solo projects
+Code for the Client Side: https://github.com/lanaFerrari/boolean-uk-final-solo-project-client
