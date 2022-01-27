@@ -1,4 +1,4 @@
-### Checkers game
+# Checkers game
 
 Website created to exercise authorization (ursing Bcrypt and Token) and logic.
 
